@@ -24,16 +24,36 @@ server.listen(process.env.PORT || 8081, ()=>{
     console.log("listenign on port", server.address().port)
 })
 
+server.playerId = 0
+
 io.on('connection',(socket)=>{
 //not sure what this line does 
     console.log("connected")
+    socket.on('newPlayer',function(){
+        socket.player ={
+            id: server.playerId++,
+            x: 345,
+            y: 456
+        }
+        socket.emit('allPlayers',getAllPlayers());
+        socket.broadcast.emit('newPlayer',socket.player)
+    })
 
     //socket.on('move',/*the move data*/)
     socket.on('test', ()=>{
         console.log("I got a test")
     })
-    socket.on('movement', (direction)=>{
-        console.log("moveing!", direction)
+    socket.on('movement', (direction, cordx,cordy)=>{
+        console.log("moveing!", direction, "cordx:", cordx, "cordy:",cordy)
     })
     socket.emit('hello', Date.now())
 })
+function getAllPlayers(){
+    var players = []
+    Object.keys(io.sockets.connected).forEach(function(socketID){
+        var player = io.sockets.connected[socketID].player;
+        if(player) players.push(player)
+    })
+    console.log("returning all the players", players)
+    return players
+}

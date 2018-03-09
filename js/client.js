@@ -9,7 +9,10 @@ Client.sendTest = ()=>{
     console.log("test send to the server")
     Client.socket.emit('test')
 }
-Client.sendMovement= function (direction){
+Client.sendMovement= function (direction, cordx, cordy){
     console.log("moveing this direction", direction)
-    Client.socket.emit('movement',direction)
+    Client.socket.emit('movement',direction,cordx,cordy)
+}
+Client.createNewPlayer=function(){
+    Client.socket.emit('newPlayer')
 }
