@@ -1,51 +1,80 @@
 AreYouAlive = AreYouAlive || {} 
 AreYouAlive.Game = function(){}
 
-AreYouAlive.Game.prototype ={
+AreYouAlive.Game={
     create: function(){
         this.game.world.setBounds(0,0,1920,1920)
         this.background = this.game.add.tileSprite(0, 0,
             this.game.world.width, this.game.world.height, 'waterTile')
+            this.playerArr = {}
 
-        this.playerArr = {}
-        this.playerArr[1] = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player')
+            // this.playerArr[1] = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player')
+            // console.log("player instance!",this.playerArr[1])
+            
+            // this.playerArr[1].scale.setTo(0.5)
+            
+            this.upKey = this.input.keyboard.addKey(Phaser.Keyboard.W);
+            this.downKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
+            this.leftKey = this.input.keyboard.addKey(Phaser.Keyboard.D);
+            this.rightKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
+            
+            this.playerID = 0
+            console.log("this is loading information from the game main menu", this.game.isCat)
+            this.addNewPlayer = (id,x,y,isCat)=>{
+                this.playerArr[id] = this.game.add.sprite(x,y,'player')
+                this.playerArr[id].isCat = isCat
+                this.playerArr[id].scale.setTo(0.2)
+                this.playerID = id 
+                console.log("the array of players is ", this.playerArr[this.playerID])
+            }
+            // console.log("the player id is ", this.playerID)
+    
+            Client.createNewPlayer(this.game.isCat)
         
-        this.upKey = this.input.keyboard.addKey(Phaser.Keyboard.W);
-        this.downKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
-        this.leftKey = this.input.keyboard.addKey(Phaser.Keyboard.D);
-        this.rightKey = this.input.keyboard.addKey(Phaser.Keyboard.A);
-
-        Client.createNewPlayer()
-        console.log("thie players current locatidfdson is ", this.playerArr[1].x , this.playerArr[1].y)
         
     },
     update:  function(){
+        console.log("thie players id is ", this.playerID)
+        console.log("the arrya of players is", this.playerArr[this.playerID])
+        // console.log("is cat?", isCat)
         if(this.upKey.isDown){
+            const Cat = this.playerArr[this.playerID].isCat
             console.log("up")
-            Client.sendMovement("up",this.playerArr[1].x,this.playerArr[1].y )
-            this.playerArr[1].x +=10
-            console.log("thie players current location is ", this.playerArr[1].x , this.playerArr[1].y)
+            this.playerArr[this.playerID].y -=10
+            Client.sendMovement("up",this.playerArr[this.playerID].x,
+            this.playerArr[this.playerID].y, 
+            this.playerID,
+            Cat )
         }
         if(this.downKey.isDown){
+            const Cat = this.playerArr[this.playerID].isCat
             console.log("down")
-            this.playerArr[1].x -=10
-            Client.sendMovement("down",this.playerArr[1].x,this.playerArr[1].y )
+            this.playerArr[this.playerID].y +=10
+            Client.sendMovement("down",this.playerArr[this.playerID].x,
+            this.playerArr[this.playerID].y, 
+            this.playerID,
+            Cat )
         }
         if(this.leftKey.isDown){
+            const Cat = this.playerArr[this.playerID].isCat
             console.log("left")
-            this.playerArr[1].y -=10
-            Client.sendMovement("left",this.playerArr[1].x,this.playerArr[1].y )
+            this.playerArr[this.playerID].x +=10
+            Client.sendMovement("left",this.playerArr[this.playerID].x,
+            this.playerArr[this.playerID].y,
+            this.playerID,
+            Cat )
         }
         if(this.rightKey.isDown){
+            const Cat = this.playerArr[this.playerID].isCat
             console.log("right")
-            this.playerArr[1].y +=10
-            Client.sendMovement("right",this.playerArr[1].x,this.playerArr[1].y )
+            this.playerArr[this.playerID].x -=10
+            Client.sendMovement("right",this.playerArr[this.playerID].x,
+            this.playerArr[this.playerID].y,
+            this.playerID,
+            Cat )
         }
         // this.game.phsyics.arcade.collide(this.player,this.deadFood,this.hitFood, null, this)
     
-    },
-    addNewPlayer: function(id,x,y){
-        this.playerArr[id] = this.game.add.sprite(x,y,'player')
     },
     hitfood: function(player,deadFood){
         this.deadFood.kill()

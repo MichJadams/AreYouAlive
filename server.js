@@ -29,11 +29,12 @@ server.playerId = 0
 io.on('connection',(socket)=>{
 //not sure what this line does 
     console.log("connected")
-    socket.on('newPlayer',function(){
+    socket.on('newPlayer',function(isCat){
         socket.player ={
             id: server.playerId++,
-            x: 345,
-            y: 456
+            x: 0,
+            y: 0,
+            isCat:isCat
         }
         socket.emit('allPlayers',getAllPlayers());
         socket.broadcast.emit('newPlayer',socket.player)
@@ -43,8 +44,9 @@ io.on('connection',(socket)=>{
     socket.on('test', ()=>{
         console.log("I got a test")
     })
-    socket.on('movement', (direction, cordx,cordy)=>{
-        console.log("moveing!", direction, "cordx:", cordx, "cordy:",cordy)
+    socket.on('movement', (direction, cordx,cordy, playerID,isCat)=>{
+        console.log("this player:",playerID," is move moveing!", direction, ", cords cordx:", cordx, "cordy:",cordy, "..and the player is a cat", isCat)
+        socket.broadcast.emit('movement',direction, cordx,cordy, playerID)
     })
     socket.emit('hello', Date.now())
 })
