@@ -16,3 +16,13 @@ Client.sendMovement= function (direction, cordx, cordy){
 Client.createNewPlayer=function(){
     Client.socket.emit('newPlayer')
 }
+Client.socket.on('newPlayer', function(data){
+    Game.addNewPlayer(data.id,data.x,data.y)
+})
+
+Client.sock.on('allPlayers', function(data){
+    console.log("these are all the players ", data)
+    for(var i =0; i < data.length; i ++){
+        Game.addNewPlayer(data[i].id,data[i].x,data[i].y)
+    }
+})
