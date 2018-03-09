@@ -1,4 +1,12 @@
-Client.sendTest()
-let game = new Phaser.Game(24*32,17*32, Phaser.AUTO, document.getElementById('game'))
-game.state.add('Game', Game)
-game.state.start('Game')
+var AreYouAlive = AreYouAlive||{};
+
+AreYouAlive.game = new Phaser.Game(window.innerWidth,
+window.innerHeight, Phaser.AUTO, '');
+
+AreYouAlive.game.state.add('Boot', AreYouAlive.Boot);
+ //uncomment these as I create them through the tutorial
+
+ AreYouAlive.game.state.add('Preload',AreYouAlive.Preload);
+AreYouAlive.game.state.add('MainMenu',AreYouAlive.MainMenu);
+AreYouAlive.game.state.add('Game', AreYouAlive.Game);
+AreYouAlive.game.state.start('Boot');

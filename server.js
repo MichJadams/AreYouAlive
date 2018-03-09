@@ -10,10 +10,15 @@ app.use('/js',express.static(__dirname+ '/js'));
 app.use('/assests',express.static(__dirname+ '/assests'));
 
 app.get('/', (req,res,next)=>{
-    console.log("posting this "+ __dirname +'/index.html')
+  
     res.sendFile(__dirname +'/index.html')
 })
 //put in some respondes to requests
+
+// app.get('/', (req,res,next)=>{
+//     console.log("sending the image?")
+//     res.sendFile( __dirname+'/assests/logo.svg')
+// }) 
 
 server.listen(process.env.PORT || 8081, ()=>{
     console.log("listenign on port", server.address().port)
@@ -26,6 +31,9 @@ io.on('connection',(socket)=>{
     //socket.on('move',/*the move data*/)
     socket.on('test', ()=>{
         console.log("I got a test")
+    })
+    socket.on('movement', (direction)=>{
+        console.log("moveing!", direction)
     })
     socket.emit('hello', Date.now())
 })
