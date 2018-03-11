@@ -19,7 +19,7 @@ AreYouAlive.Boot.prototype ={
         this.scale.pageAlignHorizontally = true; 
 
         // this.scale.setScreenSize(true);
-        console.log(this.game)
+        // console.log(this.game)
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         this.state.start('Preload')
