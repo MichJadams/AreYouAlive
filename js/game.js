@@ -17,18 +17,47 @@ AreYouAlive.Game={
         this.game.playerID = 0
         this.game.playerArr = {}
         this.game.player = {}
-        },
+        this.game.NPCfish={}
+        this.game.fishOne = this.game.add.sprite(0,0,'player')
+        this.game.fishOne.scale.setTo(0.1)
+        this.game.fishTwo = this.game.add.sprite(0,0,'player')
+        this.game.fishTwo.scale.setTo(0.1)
+        this.game.fishThree = this.game.add.sprite(0,0,'player')
+        this.game.fishThree.scale.setTo(0.1)
+        // this.game.NPCfish[fishOne,fishTwo,fishThree] //not sure this short hand works 
+        this.game.onDown = function(sprite,pointer){
+            console.log("you clicked me ")
+        }
+
+    },
     update: function(){
+        //write a function request to server for the npc fish position update
+        Client.socket.on('fishPositions',(data)=>{
+            // console.log("These are the fish positions", data)
+
+            this.game.fishOne.x = data[0].x
+            this.game.fishOne.y = data[0].y
+            this.game.fishTwo.x = data[1].x
+            this.game.fishTwo.y = data[1].y
+            this.game.fishThree.x = data[2].x
+            this.game.fishThree.y = data[2].y
+
+        })
+
+        //write a client.socket.on fishpositon function to update all the fish spirtues 
             
         Client.socket.on('newPlayer', (data)=>{
             // console.log("data from the new player function", Object.keys(data)[0] )
             // const func = AreYouAlive.game.state.states.Game.addNewPlayer
-            console.log("this is the data you recieve upon first entering the room", data)
+            // console.log("this is the data you recieve upon first entering the room", data)
             const newGuy = data[0]
 
             // this.game.playerID = Object.keys(newGuy)[0]
-            this.game.playerArr[Object.keys(newGuy)[0]] = this.game.add.sprite(0,0,'player')
-            this.game.playerArr[Object.keys(newGuy)[0]].scale.setTo(.2)
+       
+                this.game.playerArr[Object.keys(newGuy)[0]] = this.game.add.sprite(0,0,'player')
+                this.game.playerArr[Object.keys(newGuy)[0]].scale.setTo(.1)
+                this.game.playerArr[Object.keys(newGuy)[0]].events.onInputDown.add(function(){console.log("ouch")},this)
+            
             console.log("this is the player arr",this.game.playerArr)
 
             // func(data.id,data.x,data.y,data.isCat)
@@ -44,6 +73,7 @@ AreYouAlive.Game={
                         console.log("this is the key", key)
                         this.game.playerArr[key].x = data[1][key].x
                         this.game.playerArr[key].y = data[1][key].y
+                        this.game.playerArr[key].inputEnabled = true
                     }
                 }
 
@@ -65,8 +95,20 @@ AreYouAlive.Game={
             for(key in Object.keys(data)){
                 // console.log("this player is being painted", data)
                 const player = data[key]
-                this.game.playerArr[player] = this.game.add.sprite(0,0,'player')
-                this.game.playerArr[player].scale.setTo(.2)
+            
+
+                    this.game.playerArr[player] = this.game.add.sprite(0,0,'player')
+                    this.game.playerArr[player].scale.setTo(.2)
+                    this.game.playerArr[player].inputEnabled = true
+                    this.game.playerArr[player].events.onInputDown.add(function(){console.log("ouch")},this)
+                    console.log("the events", this.game.playerArr[player].events.onInputDown)
+
+                    // this.game.playerArr[player].events.onInputDown.add(this.game.onDown,this)
+                    //function onDown(sprite,pointer){
+                        //do something wonderful
+                        //console.log("you clicked me!")
+                    //}
+                
             }
         })
         if(this.upKey.isDown){
@@ -82,6 +124,10 @@ AreYouAlive.Game={
         if(this.rightKey.isDown){
             Client.sendMovement("right")
         }
+        //check for click event 
+        // if(if clicked){
+            //do a thing
+        // }
         Client.socket.on('playerPlacementUpdate',(data)=>{
             // console.log(" this is the player and thier position", data)
             const playerId = Object.keys(data)[0]
@@ -99,6 +145,10 @@ AreYouAlive.Game={
             
         //     // console.log(" I want to change this ", this.playerArr[this.playerID])
         // })
+    },
+    onDown: function (sprite,pointer){
+        // do something wonderful
+        console.log("you clicked me!")
     }
     // ,
     // hitfood: function(player,deadFood){
