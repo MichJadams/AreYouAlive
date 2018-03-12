@@ -18,6 +18,7 @@
     "express": "^4.16.2",
     "nodemon": "^1.17.1",
     "socket.io": "^2.0.4",
+    "socket.io-cookie-parser": "^1.0.0",
     "webpacks": "0.0.3"
   }
 }
