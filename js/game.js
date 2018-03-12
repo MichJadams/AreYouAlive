@@ -25,13 +25,19 @@ AreYouAlive.Game={
         this.game.fishThree = this.game.add.sprite(0,0,'player')
         this.game.fishThree.scale.setTo(0.1)
         // this.game.NPCfish[fishOne,fishTwo,fishThree] //not sure this short hand works 
-        this.game.onDown = function(sprite,pointer){
-            console.log("you clicked me ")
-        }
-
+        // this.game.onDown = function(sprite,pointer){
+        //     console.log("you clicked me ")
+        // }
+        console.log("this is the game state", this.state)
+        this.game.over = false; 
     },
     update: function(){
         //write a function request to server for the npc fish position update
+        if(this.game.over == true){
+            console.log("GAMEOVER")
+            console.log(this.state)
+            this.state.start('GameOver')
+        }
         Client.socket.on('fishPositions',(data)=>{
             // console.log("These are the fish positions", data)
 
@@ -56,7 +62,11 @@ AreYouAlive.Game={
        
                 this.game.playerArr[Object.keys(newGuy)[0]] = this.game.add.sprite(0,0,'player')
                 this.game.playerArr[Object.keys(newGuy)[0]].scale.setTo(.1)
-                this.game.playerArr[Object.keys(newGuy)[0]].events.onInputDown.add(function(){console.log("ouch")},this)
+                this.game.playerArr[Object.keys(newGuy)[0]].inputEnabled = true;
+                this.game.playerArr[Object.keys(newGuy)[0]].events.onInputDown.add((sprite,pointer)=>{
+                    console.log("You have been clicked by the cat, game over") 
+                    this.game.over = true; 
+                },this)
             
             console.log("this is the player arr",this.game.playerArr)
 
@@ -146,10 +156,10 @@ AreYouAlive.Game={
         //     // console.log(" I want to change this ", this.playerArr[this.playerID])
         // })
     },
-    onDown: function (sprite,pointer){
-        // do something wonderful
-        console.log("you clicked me!")
-    }
+    // onDown: function (sprite,pointer){
+    //     // do something wonderful
+    //     console.log("you clicked me!")
+    // }
     // ,
     // hitfood: function(player,deadFood){
     //     this.deadFood.kill()
