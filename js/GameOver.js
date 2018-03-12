@@ -9,20 +9,17 @@ AreYouAlive.GameOver.prototype ={
         
         // this.background.scale.setTo(0.5)
         this.background.autoScroll(-20,0);
+        console.log("this winnder is", this.game.winner)
+        if(this.game.winner){
+            var text = "You got clicked, better luck next time, the cat wins"
 
-        var text = "You got clicked, better luck next time"
+        }else{
+            var text = "You got clicked, better luck next time, the fish wins"
+        }
         var style = {font: "30px Arial", fill: "#fff", align: "center"}
         this.game.isCat = false 
         var t = this.game.add.text(this.game.width/2,this.game.height/2,text,style)
         t.anchor.set(0.5)
-
-        // this.game.testing = "hey, testing"
-        // this.spaceKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
-        // this.cKey = this.input.keyboard.addKey(Phaser.Keyboard.C)
-        // this.fKey = this.input.keyboard.addKey(Phaser.Keyboard.F)
-
-
-
     },
     update: function(){
         

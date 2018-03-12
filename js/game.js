@@ -3,7 +3,7 @@ AreYouAlive.Game = function(){}
 
 AreYouAlive.Game={
     create: function(){
-        this.game.world.setBounds(0,0,1920,1920)
+        this.game.world.setBounds(0,0,800,800)
         this.background = this.game.add.tileSprite(0, 0,
         this.game.world.width, this.game.world.height, 'waterTile')
         
@@ -20,24 +20,77 @@ AreYouAlive.Game={
         this.game.NPCfish={}
         this.game.fishOne = this.game.add.sprite(0,0,'player')
         this.game.fishOne.scale.setTo(0.1)
+        this.game.fishOne.events.onInputDown.add((sprite,pointer)=>{
+            this.game.catMisClicks += 1; 
+            console.log("Cat misclicks" + this.game.catMisClicks) 
+        },this)
+
         this.game.fishTwo = this.game.add.sprite(0,0,'player')
         this.game.fishTwo.scale.setTo(0.1)
+        this.game.fishTwo.events.onInputDown.add((sprite,pointer)=>{
+            this.game.catMisClicks += 1; 
+            console.log("Cat misclicks" + this.game.catMisClicks) 
+        },this)
+
         this.game.fishThree = this.game.add.sprite(0,0,'player')
         this.game.fishThree.scale.setTo(0.1)
-        // this.game.NPCfish[fishOne,fishTwo,fishThree] //not sure this short hand works 
-        // this.game.onDown = function(sprite,pointer){
-        //     console.log("you clicked me ")
-        // }
+        this.game.fishThree.events.onInputDown.add((sprite,pointer)=>{
+            this.game.catMisClicks += 1; 
+            console.log("Cat misclicks" + this.game.catMisClicks) 
+        },this)
+
+        this.game.catMisClicks = 0 
+        this.game.catLost= function(){
+            this.game.Winnder = false; 
+        }
         console.log("this is the game state", this.state)
         this.game.over = false; 
+        this.game.timer = 400
+        
+
+        var timerText = "Time left to catch a fish" + this.game.timer
+        var style = {font: "30px Arial", fill: "#fff", align: "center"}
+        this.game.t = this.game.add.text(500,20,timerText,style)
+        this.game.t.anchor.set(0.5)
+        
     },
     update: function(){
         //write a function request to server for the npc fish position update
-        if(this.game.over == true){
-            console.log("GAMEOVER")
-            console.log(this.state)
+        Client.whatTime()
+        Client.socket.on('whatTime',(time)=>{
+            this.game.timer=time
+            this.game.t.setText("Time left to catch a fish "+time)
+
+        })
+
+        Client.socket.on('GameOver',(winner)=>{
+            this.game.winner = winner;
+            console.log("Game is over")
             this.state.start('GameOver')
+        })
+
+        if(this.game.catMisClicks>=3){
+            this.game.winner = false;
+            // this.state.start('GameOver')
+            Client.GameOver(false)
         }
+
+        // console.log("this is the tier in seconds", this.game.timer)
+        if(this.game.timer <= 0){
+            this.game.winner = false;
+            // this.state.start('GameOver')
+            Client.GameOver(false)
+            
+        }
+        // console.log()
+        if(this.game.over == true){
+            this.game.winner = true; 
+            // console.log("GAMEOVER")
+            // console.log(this.state)
+            Client.GameOver(true)
+            // this.state.start('GameOver')
+        }
+
         Client.socket.on('fishPositions',(data)=>{
             // console.log("These are the fish positions", data)
 
@@ -63,6 +116,8 @@ AreYouAlive.Game={
                 this.game.playerArr[Object.keys(newGuy)[0]] = this.game.add.sprite(0,0,'player')
                 this.game.playerArr[Object.keys(newGuy)[0]].scale.setTo(.1)
                 this.game.playerArr[Object.keys(newGuy)[0]].inputEnabled = true;
+                this.game.playerArr[Object.keys(newGuy)[0]].checkWorldBounds = true
+                this.game.playerArr[Object.keys(newGuy)[0]].events.onOutOfBounds.add(Client.outOfBounds, this)
                 this.game.playerArr[Object.keys(newGuy)[0]].events.onInputDown.add((sprite,pointer)=>{
                     console.log("You have been clicked by the cat, game over") 
                     this.game.over = true; 
@@ -110,8 +165,8 @@ AreYouAlive.Game={
                     this.game.playerArr[player] = this.game.add.sprite(0,0,'player')
                     this.game.playerArr[player].scale.setTo(.2)
                     this.game.playerArr[player].inputEnabled = true
-                    this.game.playerArr[player].events.onInputDown.add(function(){console.log("ouch")},this)
-                    console.log("the events", this.game.playerArr[player].events.onInputDown)
+                    // this.game.playerArr[player].events.onInputDown.add(function(){console.log("ouch")},this)
+                    // console.log("the events", this.game.playerArr[player].events.onInputDown)
 
                     // this.game.playerArr[player].events.onInputDown.add(this.game.onDown,this)
                     //function onDown(sprite,pointer){

@@ -16,6 +16,18 @@ Client.sendMovement= function (direction){
 Client.createNewPlayer=function(isCat){
     Client.socket.emit('newPlayer',isCat)
 }
+Client.GameOver = function(winner){
+    Client.socket.emit('GameOver',winner)
+}
+Client.whatTime = function(){
+    Client.socket.emit('whatTime')
+}
+Client.outOfBounds = function(){
+    Client.socket.emit("outOfBounds")
+}
+Client.playerJoined = function(){
+    Client.socket.emit('playerJoined')
+}
 // Client.socket.on('newPlayer', function(data){
 //     // console.log("shouting out from teh client socket thingy", AreYouAlive)
 //     const func = AreYouAlive.game.state.states.Game.addNewPlayer

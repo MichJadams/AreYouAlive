@@ -9,5 +9,6 @@ console.log("jkfdsjlak", AreYouAlive.GameOver)
 AreYouAlive.game.state.add('GameOver', AreYouAlive.GameOver)
  AreYouAlive.game.state.add('Preload',AreYouAlive.Preload);
 AreYouAlive.game.state.add('MainMenu',AreYouAlive.MainMenu);
+AreYouAlive.game.state.add('WaitingRoom', AreYouAlive.WaitingRoom)
 AreYouAlive.game.state.add('Game', AreYouAlive.Game);
 AreYouAlive.game.state.start('Boot');
